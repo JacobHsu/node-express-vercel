@@ -1,0 +1,14 @@
+{
+  "name": "express-vercel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node api/server.js"
+  },
+  "author": "jacob hsu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
