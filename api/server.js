@@ -8,7 +8,7 @@ app.use(cors());
 
 const API_KEY = process.env.API_KEY;
 
-app.get("/", (req, res) => res.send("Express on Vercel" + API_KEY));
+app.get("/", (req, res) => res.send("Express on Vercel"));
 
 app.post("/completions", async (req, res) => {
   // https://platform.openai.com/docs/api-reference/chat/create
@@ -21,7 +21,7 @@ app.post("/completions", async (req, res) => {
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo", //gpt-4o-mini
-      messages: [{ role: "user", content: "Hi!" }],
+      messages: [{ role: "user", content: req.body.message }],
       max_tokens: 100,
     }),
   };
