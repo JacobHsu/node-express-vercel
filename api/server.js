@@ -3,8 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const expressip = require("express-ip");
 app.use(express.json());
 app.use(cors());
+app.use(expressip().getIpInfoMiddleware);
 
 const API_KEY = process.env.API_KEY;
 
@@ -33,8 +35,8 @@ app.post("/completions", async (req, res) => {
       options
     );
     const data = await response.json();
-    const clientOrigin = req.headers.origin;
-    res.send({ ...data, clientOrigin });
+    const ipInfo = req.ipInfo;
+    res.send({ ...data, ipInfo });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: "Internal Server Error" });
