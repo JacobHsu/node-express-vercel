@@ -33,8 +33,8 @@ app.post("/completions", async (req, res) => {
       options
     );
     const data = await response.json();
-    const clientIp = req.ip;
-    res.send({ ...data, clientIp });
+    const clientOrigin = req.headers.origin;
+    res.send({ ...data, clientOrigin });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: "Internal Server Error" });
