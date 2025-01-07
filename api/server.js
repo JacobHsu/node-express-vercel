@@ -9,10 +9,34 @@ app.use(cors());
 app.use(expressip().getIpInfoMiddleware);
 
 const API_KEY = process.env.API_KEY;
+const rateLimit = {};
+const MAX_REQUESTS = 3;
+const WINDOW_TIME = 60 * 60 * 1000; // 1 hour
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
 app.post("/completions", async (req, res) => {
+  
+  const clientIp = req.ipInfo.ip;
+  
+  if (!rateLimit[clientIp]) {
+    rateLimit[clientIp] = { count: 1, firstRequestTime: Date.now() };
+  } else {
+    rateLimit[clientIp].count += 1;
+  }
+
+  if (rateLimit[clientIp].count > MAX_REQUESTS) {
+    const timeSinceFirstRequest =
+      Date.now() - rateLimit[clientIp].firstRequestTime;
+    if (timeSinceFirstRequest < WINDOW_TIME) {
+      return res
+        .status(429)
+        .send({ error: "Too many requests. Please try again later." });
+    } else {
+      rateLimit[clientIp] = { count: 1, firstRequestTime: Date.now() };
+    }
+  }
+
   // https://platform.openai.com/docs/api-reference/chat/create
   // https://platform.openai.com/docs/models#model-endpoint-compatibility
 
@@ -35,7 +59,7 @@ app.post("/completions", async (req, res) => {
       options
     );
     const data = await response.json();
-    const ipInfo = req.ipInfo;
+    const ipInfo = req.ipInfo; // req.ipInfo.ip
     res.send({ ...data, ipInfo });
   } catch (error) {
     console.log(error);
