@@ -13,6 +13,7 @@ app.get("/", (req, res) => res.send("Express on Vercel"));
 app.post("/completions", async (req, res) => {
   // https://platform.openai.com/docs/api-reference/chat/create
   // https://platform.openai.com/docs/models#model-endpoint-compatibility
+
   const options = {
     method: "POST",
     headers: {
@@ -32,7 +33,8 @@ app.post("/completions", async (req, res) => {
       options
     );
     const data = await response.json();
-    res.send(data);
+    const clientIp = req.ip;
+    res.send({ ...data, clientIp });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: "Internal Server Error" });
