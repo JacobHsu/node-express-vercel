@@ -49,7 +49,7 @@ app.post("/completions", async (req, res) => {
     body: JSON.stringify({
       model: "gpt-3.5-turbo", //gpt-4o-mini
       messages: [{ role: "user", content: req.body.message }],
-      max_tokens: 100,
+      max_tokens: 1000,
     }),
   };
 
